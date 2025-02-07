@@ -16,12 +16,26 @@
 
 @layer components {
   .glass {
-    @apply bg-white/[0.05] backdrop-blur-xl border border-white/10;
+    @apply bg-white/[0.05] backdrop-blur-xl border border-amber-500/10;
   }
 }
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#00FFA3] to-[#DC1FFF];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-500;
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 8s linear infinite;
+    background-size: 200% 100%;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
   }
 }

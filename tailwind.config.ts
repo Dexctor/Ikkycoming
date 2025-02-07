@@ -27,6 +27,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        brand: {
+          amber: "#F59E0B",
+          orange: "#F97316",
+        },
+      },
+      gradientColorStops: {
+        'gradient-amber': '#F59E0B',
+        'gradient-orange': '#F97316',
       },
       keyframes: {
         shimmer: {
