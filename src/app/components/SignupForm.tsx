@@ -105,7 +105,7 @@ export function SignupForm() {
               placeholder="votre@email.com"
               className="w-full px-3 md:px-4 py-2 md:py-3 text-sm md:text-base 
                 bg-gradient-to-r from-amber-500/5 to-orange-400/5 rounded-lg 
-                text-white/90 placeholder-white/40 border border-amber-400/10 
+                text-black placeholder-gray-500 border border-amber-400/10 
                 focus:outline-none focus:border-amber-400/30 focus:ring-2 
                 focus:ring-amber-400/10 transition-all
                 hover:border-amber-400/20"

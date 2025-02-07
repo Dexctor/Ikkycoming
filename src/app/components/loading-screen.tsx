@@ -1,11 +1,63 @@
 "use client";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+
+// Constantes pour les animations
+const ANIMATIONS = {
+  logo: {
+    scale: [1, 1.05, 1],
+    rotate: [0, 360],
+    transition: {
+      duration: 20,
+      repeat: Infinity,
+      ease: "linear"
+    }
+  },
+  float: {
+    y: [-4, 4, -4],
+    rotateZ: [-1, 1, -1],
+    scale: [0.95, 1.05, 0.95],
+    transition: {
+      duration: 4,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  },
+  progressBar: {
+    x: ["-100%", "100%"],
+    scaleX: [0.5, 1, 0.5],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }
+  }
+} as const;
+
+// Composant pour les points de progression
+const ProgressDots = () => (
+  <div className="flex justify-center gap-3 mt-4">
+    {[0, 1, 2].map((index) => (
+      <motion.div
+        key={index}
+        className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
+        animate={{
+          scale: [0.8, 1.2, 0.8],
+          opacity: [0.3, 1, 0.3],
+        }}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          delay: index * 0.2,
+        }}
+      />
+    ))}
+  </div>
+);
 
 export const LoadingScreen = () => {
   const controls = useAnimation();
-
   useEffect(() => {
     controls.start({
       scale: [1, 1.05, 1],
@@ -18,6 +70,16 @@ export const LoadingScreen = () => {
     });
   }, [controls]);
 
+  // Mémorisation des éléments statiques
+  const backgroundEffect = useMemo(() => (
+    <motion.div
+      animate={controls}
+      className="absolute inset-[-150%] opacity-20"
+    >
+      <div className="w-full h-full bg-[url('/images/hex-grid.png')] bg-center bg-repeat-space opacity-30 mix-blend-screen" />
+    </motion.div>
+  ), [controls]);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -29,13 +91,7 @@ export const LoadingScreen = () => {
       >
         <div className="relative flex flex-col items-center">
           <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36">
-            {/* Effet de particules en arrière-plan */}
-            <motion.div
-              animate={controls}
-              className="absolute inset-[-150%] opacity-20"
-            >
-              <div className="w-full h-full bg-[url('/images/hex-grid.png')] bg-center bg-repeat-space opacity-30 mix-blend-screen" />
-            </motion.div>
+            {backgroundEffect}
 
             {/* Cercle lumineux pulsant */}
             <motion.div
@@ -56,23 +112,23 @@ export const LoadingScreen = () => {
 
             {/* Logo avec animation améliorée */}
             <motion.div
-              initial={{ y: 0 }}
-              animate={{ 
+              animate={{
                 y: [-4, 4, -4],
-                rotateZ: [-1, 1, -1],
-                scale: [0.95, 1.05, 0.95]
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
+                rotateZ: [-1, 1, -1], 
+                scale: [0.95, 1.05, 0.95],
+                transition: {
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }
               }}
               className="relative w-full h-full"
             >
               <Image
-                src="/images/logo/logo.png"
+                src="/images/logo/logo.avif"
                 alt="MyIKKI Logo"
                 fill
+                priority
                 className="object-contain drop-shadow-[0_0_30px_rgba(245,158,11,0.3)]"
                 style={{ filter: "brightness(1.2)" }}
               />
@@ -116,34 +172,17 @@ export const LoadingScreen = () => {
                   className="h-full w-full bg-gradient-to-r from-transparent via-amber-500 to-transparent"
                   animate={{
                     x: ["-100%", "100%"],
-                    scaleX: [0.5, 1, 0.5]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
+                    scaleX: [0.5, 1, 0.5],
+                    transition: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }
                   }}
                 />
               </motion.div>
 
-              {/* Points de progression avec effet de vague */}
-              <div className="flex justify-center gap-3 mt-4">
-                {[0, 1, 2].map((index) => (
-                  <motion.div
-                    key={index}
-                    className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
-                    animate={{
-                      scale: [0.8, 1.2, 0.8],
-                      opacity: [0.3, 1, 0.3],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      delay: index * 0.2,
-                    }}
-                  />
-                ))}
-              </div>
+              <ProgressDots />
             </div>
           </div>
 
