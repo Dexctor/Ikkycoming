@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { isValidEmail } from '../../utils/validation';
 import { COLORS } from '@/app/constants/theme';
+import Link from 'next/link';
 
 type UserType = 'community';
 type ToastType = 'success' | 'error';
@@ -23,6 +24,7 @@ export function SignupForm() {
   const [toast, setToast] = useState<Toast | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(formRef as React.RefObject<Element>, {});
+  const [acceptPolicy, setAcceptPolicy] = useState(false);
 
   const showToast = (type: ToastType, message: string) => {
     setToast({ type, message });
@@ -32,6 +34,11 @@ export function SignupForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!acceptPolicy) {
+      showToast('error', "Veuillez accepter la politique de confidentialité.");
+      return;
+    }
+
     if (!isValidEmail(email.trim())) {
       showToast('error', "Veuillez entrer une adresse email valide.");
       return;
@@ -99,6 +106,29 @@ export function SignupForm() {
               tabIndex={-1}
               autoComplete="off"
             />
+          </div>
+
+          <div className="flex items-start space-x-2 mt-4">
+            <input
+              type="checkbox"
+              id="privacy-policy"
+              checked={acceptPolicy}
+              onChange={(e) => setAcceptPolicy(e.target.checked)}
+              className="mt-1"
+            />
+            <label 
+              htmlFor="privacy-policy" 
+              className="text-sm text-white/70"
+            >
+              J'accepte la{' '}
+              <Link 
+                href="/politique-confidentialite"
+                className="text-green-400 hover:text-green-300 underline"
+                target="_blank"
+              >
+                politique de confidentialité
+              </Link>
+            </label>
           </div>
 
           <Button
