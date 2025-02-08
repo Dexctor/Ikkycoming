@@ -9,5 +9,5 @@ export const sanitizeEmail = (email: string): string => {
 };
 
 export const isValidUserType = (type: string): boolean => {
-  return ['community', 'investor'].includes(type);
+  return type === 'community';
 }; 

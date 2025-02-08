@@ -7,7 +7,7 @@ import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { isValidEmail } from '../../utils/validation';
 import { COLORS } from '@/app/constants/theme';
 
-type UserType = 'community' | 'investor';
+type UserType = 'community';
 type ToastType = 'success' | 'error';
 
 interface Toast {
@@ -17,7 +17,7 @@ interface Toast {
 
 export function SignupForm() {
   const [email, setEmail] = useState('');
-  const [userType, setUserType] = useState<UserType>('investor');
+  const [userType] = useState<UserType>('community');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
@@ -49,9 +49,7 @@ export function SignupForm() {
       const data = await response.json();
 
       if (response.ok) {
-        showToast('success', userType === 'investor' 
-          ? 'Merci ! Vous serez parmi les premiers informés du lancement.'
-          : 'Bienvenue dans la communauté !');
+        showToast('success', 'Bienvenue dans la communauté !');
         setEmail('');
       } else if (response.status === 429) {
         showToast('error', "Trop de tentatives. Veuillez réessayer plus tard.");
@@ -80,35 +78,6 @@ export function SignupForm() {
             hover:border-green-400/20 transition-all duration-300 
             ring-1 ring-white/5 hover:ring-green-400/10"
         >
-          <div className="flex flex-col sm:flex-row gap-2 p-1 
-            bg-gradient-to-r from-zinc-800/20 to-zinc-700/20 
-            rounded-xl border border-white/5 shadow-inner">
-            <button
-              type="button"
-              onClick={() => setUserType('investor')}
-              className={`flex-1 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium 
-                transition-all duration-200 ease-in-out ${
-                userType === 'investor'
-                  ? `bg-gradient-to-r ${COLORS.primary.gradient} text-white ${COLORS.primary.shadow}`
-                  : 'text-white/60 hover:bg-white/5 hover:text-white/80'
-              }`}
-            >
-              Futur Investisseur
-            </button>
-            <button
-              type="button"
-              onClick={() => setUserType('community')}
-              className={`flex-1 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium 
-                transition-all duration-200 ease-in-out ${
-                userType === 'community'
-                  ? 'bg-gradient-to-r from-violet-500 to-green-400 text-white shadow-lg shadow-violet-500/20'
-                  : 'text-white/60 hover:bg-white/5 hover:text-white/80'
-              }`}
-            >
-              Communauté
-            </button>
-          </div>
-
           <div className="space-y-2">
             <input
               type="email"
@@ -154,16 +123,11 @@ export function SignupForm() {
                 />
                 <span className="ml-2">Envoi...</span>
               </span>
-            ) : userType === 'investor' 
-              ? 'Être informé en premier' 
-              : 'Rejoindre la communauté'
-            }
+            ) : 'Rejoindre la communauté'}
           </Button>
 
           <p className="text-xs text-center text-gray-500 hover:text-green-400/80 transition-colors">
-            {userType === 'investor' 
-              ? 'Accès prioritaire • Projets en avant-première • Sans engagement'
-              : 'Suivez l\'évolution • Donnez votre avis • Gratuit'}
+            Suivez l'évolution • Donnez votre avis • Gratuit
           </p>
 
           <AnimatePresence>
@@ -176,12 +140,10 @@ export function SignupForm() {
                   <span 
                     className="text-3xl mb-4 block"
                   >
-                    {userType === 'investor' ? '🚀' : '🎉'}
+                    🎉
                   </span>
                   <p className="text-white/90 font-medium bg-gradient-to-r from-green-400 to-violet-500 bg-clip-text">
-                    {userType === 'investor'
-                      ? 'Merci ! Vous serez parmi les premiers informés du lancement.'
-                      : 'Bienvenue dans la communauté !'}
+                    Bienvenue dans la communauté !
                   </p>
                 </div>
               </div>

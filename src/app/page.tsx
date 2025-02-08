@@ -158,20 +158,20 @@ const SocialButtons = () => {
 // Features data
 const FEATURES = [
   {
-    title: "Une Immersion 3D Totale",
-    desc: "Plongez au cœur de vos biens grâce à des maquettes numériques interactives. Vivez une expérience digitale ludique inédite qui vous permet de repenser et réimaginer chaque espace de manière innovante.",
+    title: "Bientôt Disponible",
+    desc: "MyIKKI arrive bientôt avec une expérience immersive 3D totale. Préparez-vous à plonger au cœur de vos biens grâce à des maquettes numériques interactives.",
     icon: "⬡",
     color: "from-green-400 to-violet-500"
   },
   {
-    title: "Des Jumeaux Numériques Certifiés",
-    desc: <>Exploitez des informations détaillées et conformes aux normes pour une visualisation, une conception précises et valoriser vos projets immobiliers grâce à la <span className="text-green-400">Tokénisation</span>.</>,
+    title: "Innovation en Préparation",
+    desc: <>Notre technologie de jumeaux numériques certifiés est en cours de finalisation. Soyez parmi les premiers à découvrir comment la <span className="text-green-400">Tokénisation</span> va révolutionner vos projets.</>,
     icon: "⬢",
     color: "from-violet-500 to-green-400"
   },
   {
-    title: "Un Écosystème intégré et collaboratif",
-    desc: <>Connectez-vous à une plateforme riche en outils, services et expertises pour donner vie à vos ambitions. Accédez à un réseau qui enrichi chacun de vos projets du concept à la réalisation grâce aux <span className="text-green-400">Smart Contracts</span>.</>,
+    title: "Un Écosystème en Construction",
+    desc: <>Notre plateforme collaborative intégrant <span className="text-green-400">Smart Contracts</span> et outils innovants sera bientôt accessible. Rejoignez la liste d'attente pour être informé en premier.</>,
     icon: "⬣",
     color: "from-violet-500 to-green-400"
   }
@@ -256,10 +256,10 @@ export default function Home() {
                       [content-visibility:auto]
                     `}
                   >
-                    L'Immobilier Réinventé par les Jumeaux Numériques
+                    Bientôt Disponible : L'Immobilier du Futur
                   </h1>
                   <p className="text-base sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-                    Découvrez MyIKKI, la première plateforme immersive qui révolutionne l'expérience immobilière. Grâce à nos jumeaux numériques, explorez, sublimez et transformez vos espaces de vie et de travail en révélant tout leur potentiel.
+                    MyIKKI arrive bientôt pour révolutionner l'expérience immobilière. Inscrivez-vous dès maintenant pour être parmi les premiers à découvrir notre plateforme immersive de jumeaux numériques.
                   </p>
                 </motion.div>
 
@@ -284,9 +284,11 @@ export default function Home() {
                           borderColor: "rgba(74,240,160,0.1)",
                         }}
                       >
-                        <h3 className={`${COLORS.primary.text} font-semibold text-xl mb-3`}>EARLY ACCESS</h3>
+                        <h3 className={`${COLORS.primary.text} font-semibold text-xl mb-3`}>
+                          🚀 LANCEMENT IMMINENT
+                        </h3>
                         <p className="text-white/70 leading-relaxed">
-                          Rejoignez-nous dès aujourd'hui et saisissez l'opportunité d'être à la pointe de l'innovation immobilière. Inscrivez-vous dès maintenant pour accéder en avant-première à MyIKKI et découvrir comment nous pouvons transformer ensemble l'avenir de l'immobilier et de l'architecture.
+                          Ne manquez pas le lancement de MyIKKI ! Inscrivez-vous à notre liste d'attente exclusive pour être informé en premier et bénéficier d'un accès prioritaire dès l'ouverture de la plateforme.
                         </p>
                       </motion.div>
 

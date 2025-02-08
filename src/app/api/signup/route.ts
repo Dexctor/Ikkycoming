@@ -14,10 +14,18 @@ export async function POST(request: Request) {
   try {
     const { email, type } = await request.json();
 
-    // Validation basique
-    if (!email || !type) {
+    // Validation
+    if (!email || type !== 'community') {
       return NextResponse.json(
-        { error: 'Email et type sont requis' },
+        { error: 'Email invalide ou type incorrect' },
+        { status: 400 }
+      );
+    }
+
+    // Validation de l'email
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { error: 'Format d\'email invalide' },
         { status: 400 }
       );
     }
