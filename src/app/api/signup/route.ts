@@ -12,78 +12,30 @@ const limiter = rateLimit({
 
 export async function POST(request: Request) {
   try {
-    // Rate limiting
-    try {
-      await limiter.check(request, 10); // 10 requests per minute per IP
-    } catch {
-      return NextResponse.json(
-        { error: 'Too many requests' },
-        { status: 429 }
-      );
-    }
+    const { email, type } = await request.json();
 
-    // Validate Content-Type
-    const contentType = request.headers.get('content-type');
-    if (!contentType?.includes('application/json')) {
+    // Validation basique
+    if (!email || !type) {
       return NextResponse.json(
-        { error: 'Content-Type must be application/json' },
-        { status: 415 }
-      );
-    }
-
-    const body = await request.json();
-
-    // Validate required fields
-    if (!body.email || !body.type) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Email et type sont requis' },
         { status: 400 }
       );
     }
 
-    // Validate and sanitize email
-    const sanitizedEmail = sanitizeEmail(body.email);
-    if (!isValidEmail(sanitizedEmail)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      );
-    }
+    // Ici, vous pouvez :
+    // 1. Sauvegarder dans une base de données
+    // 2. Envoyer à un service comme Mailchimp, SendGrid, etc.
+    // 3. Ou simplement logger pour le moment
+    console.log('Nouvelle inscription:', { email, type });
 
-    // Validate user type
-    if (!isValidUserType(body.type)) {
-      return NextResponse.json(
-        { error: 'Invalid user type' },
-        { status: 400 }
-      );
-    }
-
-    // Verify webhook URL is configured
-    if (!WEBHOOK_URL) {
-      throw new Error('Webhook URL not configured');
-    }
-
-    const response = await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: sanitizedEmail,
-        type: body.type,
-        timestamp: new Date().toISOString(),
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to submit to Google Apps Script');
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Signup error:', error);
     return NextResponse.json(
-      { error: 'Failed to process signup' },
+      { message: 'Inscription réussie' },
+      { status: 200, headers: { 'Cache-Control': 'public, max-age=0, must-revalidate' } }
+    );
+  } catch (error) {
+    console.error('Erreur signup:', error);
+    return NextResponse.json(
+      { error: 'Erreur serveur' },
       { status: 500 }
     );
   }

@@ -9,33 +9,70 @@
   }
 
   body {
-    @apply bg-black text-white;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-black text-white antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 }
 
 @layer components {
   .glass {
-    @apply bg-white/[0.05] backdrop-blur-xl border border-amber-500/10;
+    @apply bg-black/80 backdrop-blur-xl border border-violet-500/10;
+    -webkit-backdrop-filter: blur(16px);
   }
 }
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-500;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-green-400;
+    -webkit-background-clip: text;
+  }
+
+  .gold-gradient {
+    @apply bg-gradient-to-r from-violet-600 to-green-400;
+  }
+
+  .gold-glow {
+    @apply drop-shadow-[0_0_8px_rgba(106,27,154,0.3)];
+    -webkit-box-shadow: 0 0 8px rgba(106,27,154,0.3);
+  }
+
+  .gold-shimmer {
+    background: linear-gradient(
+      90deg, 
+      #4A148C 0%,
+      #00E676 100%
+    );
+  }
+}
+
+/* Optimisations Safari */
+@supports (-webkit-touch-callout: none) {
+  .glass {
+    @apply bg-black/90;
   }
   
-  .animate-shimmer {
-    animation: shimmer 8s linear infinite;
-    background-size: 200% 100%;
+  .backdrop-blur-xl {
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
+
+/* Désactiver les animations si l'utilisateur le préfère */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
 @keyframes shimmer {
-  from {
-    background-position: 200% 0;
+  0% {
+    background-position: 0% center;
   }
-  to {
-    background-position: -200% 0;
+  100% {
+    background-position: 200% center;
   }
 }

@@ -1,116 +1,76 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
 
-import { SignupForm } from '@/app/components/SignupForm';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { BackgroundBeams } from './components/background-beams';
-import { LoadingScreen } from './components/loading-screen';
-import { useState, useEffect, useMemo } from 'react';
-import { FaDiscord, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { FaTwitter, FaLinkedin } from 'react-icons/fa';
+import dynamic from 'next/dynamic';
+import React from 'react';
+import { COLORS } from '@/app/constants/theme';
 
-// Extraction des constantes d'animation
+// Remplacer le debounce de lodash par une version plus légère
+const debounce = (func: Function, wait: number) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
+
+// Optimiser le chargement des composants dynamiques
+const SignupForm = dynamic(
+  () => import('@/app/components/SignupForm').then(mod => mod.SignupForm),
+  {
+    loading: () => <div className="animate-pulse h-96 bg-white/5 rounded-xl" />,
+    ssr: false
+  }
+);
+
+const Footer = dynamic(
+  () => import('@/app/components/Footer').then(mod => mod.Footer),
+  {
+    ssr: false,
+    loading: () => null
+  }
+);
+
+// Simplifier les animations pour améliorer les performances
 const ANIMATIONS = {
   container: {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.2,
-        ease: "easeOut",
-        duration: 0.6,
-      },
-    },
+      transition: { duration: 0.3 }
+    }
   },
   item: {
-    hidden: { 
-      opacity: 0, 
-      y: 20,
-      scale: 0.98
-    },
+    hidden: { opacity: 0 },
     visible: { 
-      opacity: 1, 
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.1, 0.25, 1],
-      }
-    },
-  },
-  featureIcon: (index: number) => ({
-    opacity: [0.6, 1, 0.6],
-    scale: [1, 1.02, 1],
-    rotate: [0, 1, 0],
-    transition: {
-      duration: 3,
-      repeat: Infinity,
-      ease: [0.4, 0, 0.2, 1],
-      delay: index * 0.1,
+      opacity: 1,
+      transition: { duration: 0.2 }
     }
-  })
+  }
 } as const;
 
-// Composant pour le logo animé
+// Optimiser le chargement des images
 const AnimatedLogo = () => (
-  <motion.div
-    variants={ANIMATIONS.item}
-    className="relative flex justify-center mb-8 sm:mb-12"
-  >
-    <motion.div 
-      className="relative cursor-pointer"
-      animate={{
-        y: [-2, 2, -2],
-        rotate: [-0.5, 0.5, -0.5]
-      }}
-      transition={{
-        y: {
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-          repeatType: "mirror"
-        },
-        rotate: {
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          repeatType: "mirror"
-        }
-      }}
-      whileHover={{
-        scale: 1.05,
-        rotate: 0,
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 20
-        }
-      }}
-      whileTap={{ 
-        scale: 0.98,
-        rotate: 0,
-        transition: {
-          type: "spring",
-          stiffness: 400,
-          damping: 17
-        }
-      }}
-    >
-      <Image
-        src="/images/logo/logo.avif"
-        alt="MyIKKI Logo"
-        width={120}
-        height={120}
-        priority
-        className="drop-shadow-[0_0_25px_rgba(245,158,11,0.25)] relative z-10 transition-all duration-300"
-      />
-    </motion.div>
+  <motion.div variants={ANIMATIONS.item} className="relative flex justify-center mb-8">
+    <Image
+      src="/images/logo/logo.avif"
+      alt="MyIKKI Logo"
+      width={120}
+      height={120}
+      priority
+      className="drop-shadow-[0_0_25px_rgba(74,240,160,0.25)]"
+      loading="eager"
+      fetchPriority="high"
+    />
   </motion.div>
 );
 
 // Composant pour les features
-const Feature = ({ title, desc, icon, color, index }: {
+const Feature = React.memo(({ title, desc, icon, color, index }: {
   title: string;
   desc: React.ReactNode;
   icon: string;
@@ -157,13 +117,13 @@ const Feature = ({ title, desc, icon, color, index }: {
       <p className="text-white/70 leading-relaxed">{desc}</p>
     </div>
   </motion.div>
-);
+));
 
 // Composant pour les boutons sociaux
 const SocialButtons = () => {
   const socialLinks = useMemo(() => [
-    { Icon: FaTwitter, href: "https://x.com/MyIkki_Network", color: "text-[#1DA1F2]" },
-    { Icon: FaLinkedin, href: "https://www.linkedin.com/company/myikki/", color: "text-[#0077B5]" },
+    { Icon: FaTwitter, href: "https://x.com/MyIkki_Network", color: "hover:text-green-400" },
+    { Icon: FaLinkedin, href: "https://www.linkedin.com/company/myikki/", color: "hover:text-violet-500" },
   ], []);
 
   return (
@@ -181,7 +141,7 @@ const SocialButtons = () => {
           rel="noopener noreferrer"
           className={`
             p-3 rounded-full transition-all duration-300 
-            hover:scale-110 hover:shadow-lg 
+            hover:scale-110 hover:shadow-lg text-white/70
             ${color} bg-white/10 backdrop-blur-sm
           `}
           variants={ANIMATIONS.item}
@@ -201,50 +161,80 @@ const FEATURES = [
     title: "Une Immersion 3D Totale",
     desc: "Plongez au cœur de vos biens grâce à des maquettes numériques interactives. Vivez une expérience digitale ludique inédite qui vous permet de repenser et réimaginer chaque espace de manière innovante.",
     icon: "⬡",
-    color: "from-amber-400 to-amber-300/70"
+    color: "from-green-400 to-violet-500"
   },
   {
     title: "Des Jumeaux Numériques Certifiés",
-    desc: <>Exploitez des informations détaillées et conformes aux normes pour une visualisation, une conception précises et valoriser vos projets immobiliers grâce à la <span className="text-amber-400">Tokénisation</span>.</>,
+    desc: <>Exploitez des informations détaillées et conformes aux normes pour une visualisation, une conception précises et valoriser vos projets immobiliers grâce à la <span className="text-green-400">Tokénisation</span>.</>,
     icon: "⬢",
-    color: "from-orange-300 to-amber-400/70"
+    color: "from-violet-500 to-green-400"
   },
   {
     title: "Un Écosystème intégré et collaboratif",
-    desc: <>Connectez-vous à une plateforme riche en outils, services et expertises pour donner vie à vos ambitions. Accédez à un réseau qui enrichi chacun de vos projets du concept à la réalisation grâce aux <span className="text-amber-400">Smart Contracts</span>.</>,
+    desc: <>Connectez-vous à une plateforme riche en outils, services et expertises pour donner vie à vos ambitions. Accédez à un réseau qui enrichi chacun de vos projets du concept à la réalisation grâce aux <span className="text-green-400">Smart Contracts</span>.</>,
     icon: "⬣",
-    color: "from-orange-300 to-orange-200/70"
+    color: "from-violet-500 to-green-400"
   }
 ] as const;
 
+// Lazy loading des images non critiques
+const backgroundImage = {
+  loading: 'lazy',
+  decoding: 'async'
+};
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+    // Réduire le temps de chargement initial
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2500);
+    }, 300); // Réduit de 800ms à 300ms
+
+    if (document.readyState === 'complete') {
+      setIsLoading(false);
+      clearTimeout(timer);
+    }
 
     return () => clearTimeout(timer);
   }, []);
 
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <AnimatePresence mode="wait">
       {isLoading ? (
-        <LoadingScreen key="loading" />
+        <motion.div
+          key="loading"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="min-h-screen bg-black flex items-center justify-center"
+        >
+          <Image
+            src="/images/logo/logo.avif"
+            alt="MyIKKI Logo"
+            width={80}
+            height={80}
+            priority
+            className="animate-pulse drop-shadow-[0_0_15px_rgba(74,240,160,0.2)]"
+          />
+        </motion.div>
       ) : (
         <motion.main
           key="main"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ 
-            duration: 0.6,
-            ease: [0.22, 1, 0.36, 1],
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
         >
           <div className="min-h-screen relative overflow-hidden bg-black">
-            <BackgroundBeams className="absolute inset-0" />
+            <div className="absolute inset-0" />
             
             <motion.div 
               className="relative"
@@ -256,9 +246,16 @@ export default function Home() {
                 <AnimatedLogo />
 
                 <motion.div variants={ANIMATIONS.item} className="text-center mb-12 sm:mb-16 relative">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold 
-                    bg-clip-text text-transparent bg-gradient-to-r from-amber-400 
-                    to-orange-300 leading-tight mb-4 sm:mb-6">
+                  <h1 
+                    className={`
+                      text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold 
+                      bg-clip-text text-transparent 
+                      bg-gradient-to-r ${COLORS.primary.gradient}
+                      leading-tight mb-4 sm:mb-6
+                      [text-wrap:balance]
+                      [content-visibility:auto]
+                    `}
+                  >
                     L'Immobilier Réinventé par les Jumeaux Numériques
                   </h1>
                   <p className="text-base sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
@@ -269,22 +266,25 @@ export default function Home() {
                 <div className="grid lg:grid-cols-2 gap-8 sm:gap-16 items-start">
                   <motion.div variants={ANIMATIONS.item}>
                     <div className="text-center lg:text-left space-y-12">
-                      <div className="space-y-8">
+                      <div className={`glass rounded-xl p-4 md:p-6 space-y-8 border 
+                        ${COLORS.glass.border} ${COLORS.primary.hover}
+                        bg-gradient-to-br ${COLORS.glass.background} transition-colors`}>
                         {FEATURES.map((feature, index) => (
                           <Feature key={feature.title} {...feature} index={index} />
                         ))}
                       </div>
 
                       <motion.div
-                        className="bg-gradient-to-br from-white/5 to-transparent backdrop-blur-sm rounded-2xl p-6 
-                          border border-white/5 hover:border-amber-400/10"
+                        className={`glass rounded-xl p-4 md:p-6 
+                          ${COLORS.glass.border} ${COLORS.primary.hover}
+                          bg-gradient-to-br ${COLORS.glass.background}`}
                         whileHover={{
                           scale: 1.01,
-                          boxShadow: "0 0 30px rgba(245,158,11,0.05)",
-                          borderColor: "rgba(245,158,11,0.1)",
+                          boxShadow: "0 0 30px rgba(74,240,160,0.05)",
+                          borderColor: "rgba(74,240,160,0.1)",
                         }}
                       >
-                        <h3 className="text-amber-400 font-semibold text-xl mb-3">EARLY ACCESS</h3>
+                        <h3 className={`${COLORS.primary.text} font-semibold text-xl mb-3`}>EARLY ACCESS</h3>
                         <p className="text-white/70 leading-relaxed">
                           Rejoignez-nous dès aujourd'hui et saisissez l'opportunité d'être à la pointe de l'innovation immobilière. Inscrivez-vous dès maintenant pour accéder en avant-première à MyIKKI et découvrir comment nous pouvons transformer ensemble l'avenir de l'immobilier et de l'architecture.
                         </p>
@@ -301,8 +301,8 @@ export default function Home() {
                       className="absolute inset-0 -z-10"
                       animate={{
                         background: [
-                          'radial-gradient(circle at 50% 50%, rgba(245,158,11,0.08) 0%, transparent 70%)',
-                          'radial-gradient(circle at 50% 50%, rgba(249,115,22,0.08) 0%, transparent 70%)',
+                          'radial-gradient(circle at 50% 50%, rgba(74,240,160,0.08) 0%, transparent 70%)',
+                          'radial-gradient(circle at 50% 50%, rgba(139,92,246,0.08) 0%, transparent 70%)',
                         ],
                       }}
                       transition={{
@@ -318,6 +318,8 @@ export default function Home() {
                 </div>
               </div>
             </motion.div>
+
+            <Footer />
           </div>
         </motion.main>
       )}

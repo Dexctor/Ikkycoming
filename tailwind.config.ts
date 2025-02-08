@@ -29,18 +29,25 @@ const config: Config = {
           foreground: "hsl(var(--accent-foreground))",
         },
         brand: {
-          amber: "#F59E0B",
-          orange: "#F97316",
+          purple: "#4A148C",
+          violet: "#6A1B9A",
+          green: "#00E676",
         },
       },
-      gradientColorStops: {
-        'gradient-amber': '#F59E0B',
-        'gradient-orange': '#F97316',
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       keyframes: {
         shimmer: {
-          '0%': { backgroundPosition: '200% 0' },
-          '100%': { backgroundPosition: '-200% 0' },
+          '0%': { 
+            transform: 'translateX(-100%)',
+            opacity: '0'
+          },
+          '100%': { 
+            transform: 'translateX(100%)',
+            opacity: '1'
+          },
         },
       },
       animation: {
