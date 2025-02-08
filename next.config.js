@@ -14,14 +14,15 @@ const nextConfig = {
   },
   experimental: {
     scrollRestoration: true,
-    optimizeCss: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   webpack: (config, { dev, isServer }) => {
-    // Optimisation pour la production uniquement
     if (!dev && !isServer) {
+      config.ignoreWarnings = [
+        { module: /node_modules\/punycode/ }
+      ];
       config.optimization = {
         ...config.optimization,
         splitChunks: {
@@ -46,10 +47,15 @@ const nextConfig = {
             lib: {
               test: /[\\/]node_modules[\\/]/,
               name(module) {
-                const packageName = module.context.match(
+                if (!module.context) return 'lib';
+                
+                const match = module.context.match(
                   /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-                )[1];
-                return `npm.${packageName.replace('@', '')}`;
+                );
+                
+                if (!match || !match[1]) return 'lib';
+                
+                return `npm.${match[1].replace('@', '')}`;
               },
               priority: 10,
               minChunks: 1,
