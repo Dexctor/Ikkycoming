@@ -54,7 +54,7 @@ export function CookieBanner() {
             <div className="flex gap-3">
               <Button
                 onClick={refuseCookies}
-                variant="outline"
+                variant="secondary"
                 className="text-sm hover:bg-red-500/10"
               >
                 Refuser
