@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from 'next/server';
-import { isValidEmail, sanitizeEmail, isValidUserType } from '../../../utils/validation';
+import { isValidEmail } from '../../../utils/validation';
 import { rateLimit } from '../../../utils/rate-limit';
-
-const WEBHOOK_URL = process.env.GOOGLE_WEBHOOK_URL;
+import { addSubscriberToAirtable } from '../../../utils/airtable';
 
 const limiter = rateLimit({
-  interval: 60 * 1000, // 60 seconds
-  uniqueTokenPerInterval: 500, // Max 500 users per interval
+  interval: 60 * 1000,
+  uniqueTokenPerInterval: 500,
 });
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    await limiter.check(request, 10); // Limite à 10 requêtes par minute par IP
+
     const { email, type } = await request.json();
 
     // Validation
@@ -22,7 +24,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validation de l'email
     if (!isValidEmail(email)) {
       return NextResponse.json(
         { error: 'Format d\'email invalide' },
@@ -30,18 +31,32 @@ export async function POST(request: Request) {
       );
     }
 
-    // Ici, vous pouvez :
-    // 1. Sauvegarder dans une base de données
-    // 2. Envoyer à un service comme Mailchimp, SendGrid, etc.
-    // 3. Ou simplement logger pour le moment
-    console.log('Nouvelle inscription:', { email, type });
+    // Ajout à Airtable
+    await addSubscriberToAirtable(email);
 
     return NextResponse.json(
       { message: 'Inscription réussie' },
-      { status: 200, headers: { 'Cache-Control': 'public, max-age=0, must-revalidate' } }
+      { status: 200 }
     );
   } catch (error) {
     console.error('Erreur signup:', error);
+    
+    if (error instanceof Error) {
+      if (error.message === 'Rate limit exceeded') {
+        return NextResponse.json(
+          { error: 'Trop de tentatives, veuillez réessayer plus tard' },
+          { status: 429 }
+        );
+      }
+      
+      if (error.message.includes('AIRTABLE')) {
+        return NextResponse.json(
+          { error: 'Erreur de configuration du service' },
+          { status: 500 }
+        );
+      }
+    }
+
     return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
