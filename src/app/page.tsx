@@ -102,7 +102,7 @@ export default function Home() {
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold 
                     bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-violet-500
                     leading-tight mb-4 sm:mb-6 [text-wrap:balance] [content-visibility:auto]">
-                    Bientôt Disponible : L'Immobilier du Futur
+                    L'Immobilier Réinventé par les Jumeaux Numériques
                   </h1>
                   <p className="text-base sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
                     Préparez vous à découvrir prochainement MyIKKI et notre projet de création de la première plateforme.
