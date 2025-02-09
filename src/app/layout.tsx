@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: 'MyIKKI',
     images: [
       {
-        url: `${BASE_URL}/images/og-image.jpg`,
+        url: `${BASE_URL}/images/og-image.webp`,
         width: 1200,
         height: 630,
         alt: 'MyIKKI Preview',
@@ -90,6 +90,16 @@ export default function RootLayout({
               });
             `,
           }}
+        />
+        {/* Préchargement optimisé de l'image du logo */}
+        <link
+          rel="preload"
+          href="/images/logo/logo.webp"
+          as="image"
+          type="image/webp"
+          fetchPriority="high"
+          imageSrcSet="/images/logo/logo.webp?w=120 1x, /images/logo/logo.webp?w=240 2x"
+          imageSizes="120px"
         />
       </head>
       <body className={inter.className}>
