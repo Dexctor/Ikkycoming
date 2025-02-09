@@ -12,7 +12,7 @@ export const FEATURES: Feature[] = [
     title: "Explorer en 3D",
     desc: "Vous pourrez explorer vos biens en 3D grâce à des maquettes numériques interactives. Vivez une expérience digitale ludique et inédite pour repenser et réimaginer chaque espace de manière innovante.",
     icon: "⬢",
-    color: "from-green-400 to-violet-500"
+    color: "from-violet-500 to-green-400"
   },
   {
     title: "Gérer vos Jumeaux Numériques",
