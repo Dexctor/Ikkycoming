@@ -40,7 +40,7 @@ export const LoadingScreen = memo(() => {
             className="relative w-24 h-24"
           >
             <Image
-              src="/images/logo/logo.avif"
+              src="/images/logo/logo.webp"
               alt="MyIKKI Logo"
               fill
               priority

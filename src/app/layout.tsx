@@ -72,14 +72,11 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Déplacer Google Analytics dans un composant séparé */}
+        
+        {/* Script Google Analytics avec consentement par défaut désactivé */}
         <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-          strategy="lazyOnload" // Chargement différé pour améliorer les performances
-        />
-        <Script
-          id="ga-script"
-          strategy="lazyOnload"
+          id="gtag-init"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
@@ -87,10 +84,23 @@ export default function RootLayout({
               gtag('js', new Date());
               gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
                 page_path: window.location.pathname,
+                'cookie_flags': 'SameSite=None;Secure'
               });
+              // Désactiver le consentement par défaut
+              gtag('consent', 'default', {
+                'analytics_storage': 'denied'
+              });
+              // Vérifier le consentement existant
+              const consent = localStorage.getItem('cookie-consent');
+              if (consent === 'accepted') {
+                gtag('consent', 'update', {
+                  'analytics_storage': 'granted'
+                });
+              }
             `,
           }}
         />
+        
         {/* Préchargement optimisé de l'image du logo */}
         <link
           rel="preload"

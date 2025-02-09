@@ -11,7 +11,7 @@ export const LoadingScreen = () => (
     className="min-h-screen bg-black flex items-center justify-center"
   >
     <Image
-      src="/images/logo/logo.avif"
+      src="/images/logo/logo.webp"
       alt="MyIKKI Logo"
       width={80}
       height={80}
