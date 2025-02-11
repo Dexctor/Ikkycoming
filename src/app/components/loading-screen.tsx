@@ -42,7 +42,8 @@ export const LoadingScreen = memo(() => {
             <Image
               src="/images/logo/logo.webp"
               alt="MyIKKI Logo"
-              fill
+              width={96}
+              height={96}
               priority
               className="object-contain"
               loading="eager"

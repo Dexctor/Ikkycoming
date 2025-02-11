@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { isValidEmail } from '../../../utils/validation';
 import { rateLimit } from '../../../utils/rate-limit';
 import { addSubscriberToAirtable } from '../../../utils/airtable';
+import { sanitizeEmail, isValidUserType } from '../../../utils/validation';
 
 const limiter = rateLimit({
   interval: 60 * 1000,
@@ -11,13 +12,24 @@ const limiter = rateLimit({
 
 export async function POST(request: Request) {
   try {
-    // Rate limiting
-    await limiter.check(request, 10); // Limite à 10 requêtes par minute par IP
+    // Vérification de l'origine
+    const origin = request.headers.get('origin');
+    if (!process.env.ALLOWED_ORIGINS?.includes(origin || '')) {
+      return NextResponse.json(
+        { error: 'Origine non autorisée' },
+        { status: 403 }
+      );
+    }
+
+    await limiter.check(request, 10);
 
     const { email, type } = await request.json();
+    
+    // Sanitize email avant validation
+    const sanitizedEmail = sanitizeEmail(email);
 
-    // Validation
-    if (!email || type !== 'community') {
+    // Validation plus stricte
+    if (!email || !isValidUserType(type)) {
       return NextResponse.json(
         { error: 'Email invalide ou type incorrect' },
         { status: 400 }

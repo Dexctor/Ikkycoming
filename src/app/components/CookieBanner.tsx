@@ -150,7 +150,7 @@ export function CookieBanner() {
               </motion.p>
             </div>
             <div className="flex flex-row gap-3 w-full sm:w-auto">
-              <motion.button
+              <motion.div
                 variants={buttonVariants}
                 whileTap="tap"
                 className="flex-1 sm:flex-initial"
@@ -164,8 +164,8 @@ export function CookieBanner() {
                 >
                   Refuser
                 </Button>
-              </motion.button>
-              <motion.button
+              </motion.div>
+              <motion.div
                 variants={buttonVariants}
                 whileTap="tap"
                 className="flex-1 sm:flex-initial"
@@ -180,7 +180,7 @@ export function CookieBanner() {
                 >
                   Accepter
                 </Button>
-              </motion.button>
+              </motion.div>
             </div>
           </motion.div>
         </motion.div>

@@ -51,7 +51,13 @@ export const metadata: Metadata = {
   },
   other: {
     'bfcache-opt-in': 'true'
-  }
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
 };
 
 export const viewport: Viewport = {
@@ -108,8 +114,6 @@ export default function RootLayout({
           as="image"
           type="image/webp"
           fetchPriority="high"
-          imageSrcSet="/images/logo/logo.webp?w=120 1x, /images/logo/logo.webp?w=240 2x"
-          imageSizes="120px"
         />
       </head>
       <body className={inter.className}>
