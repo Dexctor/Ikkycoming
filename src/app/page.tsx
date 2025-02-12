@@ -67,7 +67,7 @@ export default function Home() {
                   <p className="text-base sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
                     Préparez vous à découvrir prochainement MyIKKI et notre projet de création de la première plateforme immersive qui révolutionne l'expérience immobilière. <br />Inscrivez-vous dès maintenant pour
                     être parmi les premiers à découvrir notre plateforme immersive de jumeaux numériques. <br /> <br /> 
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-violet-500">
+                    <span className="block text-2xl sm:text-3xl font-bold py-2 bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-teal-400 to-violet-600">
                       Explorez, sublimez et transformez vos espaces de vie et de travail en révélant tout leur potentiel.
                     </span>
                   </p>
