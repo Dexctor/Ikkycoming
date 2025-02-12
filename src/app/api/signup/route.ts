@@ -4,24 +4,51 @@ import { isValidEmail } from '../../../utils/validation';
 import { rateLimit } from '../../../utils/rate-limit';
 import { addSubscriberToAirtable } from '../../../utils/airtable';
 import { sanitizeEmail, isValidUserType } from '../../../utils/validation';
+import { headers } from 'next/headers';
 
 const limiter = rateLimit({
-  interval: 60 * 1000,
+  interval: 60 * 1000, // 1 minute
   uniqueTokenPerInterval: 500,
 });
 
+// Liste des origines autorisées
+const allowedOrigins = [
+  'https://myikki.io',
+  'https://www.myikki.io',
+  'http://localhost:3000'
+];
+
 export async function POST(request: Request) {
+  const headersList = headers();
+  const referer = headersList.get('referer');
+  
+  // Vérifiez que la requête vient de votre site
+  if (!referer || !allowedOrigins.some(origin => referer.startsWith(origin))) {
+    return NextResponse.json(
+      { error: 'Invalid referer' },
+      { status: 403 }
+    );
+  }
+
   try {
-    // Vérification de l'origine
+    // Vérification de l'origine de manière plus flexible
     const origin = request.headers.get('origin');
-    if (!process.env.ALLOWED_ORIGINS?.includes(origin || '')) {
+    if (origin && !allowedOrigins.includes(origin)) {
       return NextResponse.json(
         { error: 'Origine non autorisée' },
-        { status: 403 }
+        { 
+          status: 403,
+          headers: {
+            'Access-Control-Allow-Origin': allowedOrigins.join(', '),
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+          }
+        }
       );
     }
 
-    await limiter.check(request, 10);
+    // Limite plus stricte : 5 requêtes par minute par IP
+    await limiter.check(request, 5);
 
     const { email, type } = await request.json();
     
@@ -48,10 +75,21 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       { message: 'Inscription réussie' },
-      { status: 200 }
+      { 
+        status: 200,
+        headers: {
+          'Access-Control-Allow-Origin': origin || '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      }
     );
   } catch (error) {
-    console.error('Erreur signup:', error);
+    console.error('Erreur signup détaillée:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     
     if (error instanceof Error) {
       if (error.message === 'Rate limit exceeded') {
@@ -62,8 +100,12 @@ export async function POST(request: Request) {
       }
       
       if (error.message.includes('AIRTABLE')) {
+        // Message d'erreur plus détaillé pour le débogage
         return NextResponse.json(
-          { error: 'Erreur de configuration du service' },
+          { 
+            error: 'Erreur de configuration du service',
+            details: error.message
+          },
           { status: 500 }
         );
       }
@@ -74,4 +116,19 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+}
+
+// Ajouter le gestionnaire OPTIONS pour le preflight CORS
+export async function OPTIONS(request: Request) {
+  const origin = request.headers.get('origin');
+  
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': origin || '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400' // 24 heures
+    }
+  });
 } 

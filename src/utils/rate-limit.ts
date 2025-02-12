@@ -9,8 +9,6 @@ export function rateLimit(options?: Options) {
   const tokenCache = new LRUCache({
     max: options?.uniqueTokenPerInterval || 500,
     ttl: options?.interval || 60000,
-    updateAgeOnGet: true,
-    updateAgeOnHas: true,
   });
 
   return {
@@ -18,6 +16,7 @@ export function rateLimit(options?: Options) {
       const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
                  request.headers.get('x-real-ip') || 
                  'anonymous';
+                 
       const tokenCount = (tokenCache.get(ip) as number[]) || [0];
       
       if (tokenCount[0] === 0) {
