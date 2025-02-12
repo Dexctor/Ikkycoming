@@ -65,7 +65,11 @@ export default function Home() {
                     L'Immobilier Réinventé par les Jumeaux Numériques
                   </h1>
                   <p className="text-base sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-                    Découvrez MyIKKI, la première plateforme immersive qui révolutionne l'expérience immobilière. <br /> Grâce à nos jumeaux numériques, explorez, sublimez et transformer vos espace de vie et de travail en révélant tout leur potentiel.
+                    Préparez vous à découvrir prochainement MyIKKI et notre projet de création de la première plateforme immersive qui révolutionne l'expérience immobilière. <br />Inscrivez-vous dès maintenant pour
+                    être parmi les premiers à découvrir notre plateforme immersive de jumeaux numériques. <br /> <br /> 
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-violet-500">
+                      Explorez, sublimez et transformez vos espaces de vie et de travail en révélant tout leur potentiel.
+                    </span>
                   </p>
                 </motion.div>
 
