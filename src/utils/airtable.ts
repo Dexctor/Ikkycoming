@@ -12,6 +12,15 @@ console.log('Config Airtable:', {
   tableName: AIRTABLE_TABLE_NAME
 });
 
+// Au début du fichier, après la définition des variables
+console.log('Environment:', process.env.NODE_ENV);
+console.log('Airtable Config:', {
+  hasApiKey: !!AIRTABLE_API_KEY,
+  apiKeyLength: AIRTABLE_API_KEY?.length,
+  baseId: AIRTABLE_BASE_ID,
+  tableName: AIRTABLE_TABLE_NAME
+});
+
 if (!AIRTABLE_API_KEY) {
   throw new Error('AIRTABLE_API_KEY is not defined');
 }
@@ -28,6 +37,12 @@ const base = new Airtable({
 
 export const addSubscriberToAirtable = async (email: string) => {
   try {
+    console.log('Starting addSubscriberToAirtable with:', {
+      email,
+      baseId: AIRTABLE_BASE_ID,
+      tableName: AIRTABLE_TABLE_NAME
+    });
+
     // Test de connexion à la base avec plus de détails sur l'erreur
     try {
       console.log('Tentative de connexion à Airtable...');
