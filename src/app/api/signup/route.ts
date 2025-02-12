@@ -70,20 +70,56 @@ export async function POST(request: Request) {
       );
     }
 
-    // Ajout à Airtable
-    await addSubscriberToAirtable(email);
-
-    return NextResponse.json(
-      { message: 'Inscription réussie' },
-      { 
-        status: 200,
-        headers: {
-          'Access-Control-Allow-Origin': origin || '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type'
+    try {
+      await addSubscriberToAirtable(email);
+      
+      return NextResponse.json(
+        { message: 'Inscription réussie' },
+        { 
+          status: 200,
+          headers: {
+            'Access-Control-Allow-Origin': origin || '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+          }
+        }
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        // Gestion des emails en double
+        if (error.message.includes('Email already exists')) {
+          return NextResponse.json(
+            { 
+              error: 'Email déjà inscrit',
+              details: 'Cette adresse email est déjà enregistrée.'
+            },
+            { status: 409 }
+          );
+        }
+        
+        // Autres erreurs Airtable
+        if (error.message.includes('AIRTABLE')) {
+          return NextResponse.json(
+            { 
+              error: 'Service temporairement indisponible',
+              details: 'Impossible de traiter votre inscription pour le moment. Veuillez réessayer plus tard.'
+            },
+            { status: 503 }
+          );
         }
       }
-    );
+      
+      // Erreurs inattendues
+      console.error('Erreur inattendue:', error);
+      return NextResponse.json(
+        { 
+          error: 'Erreur inattendue',
+          details: 'Une erreur est survenue lors de votre inscription. Veuillez réessayer plus tard.'
+        },
+        { status: 500 }
+      );
+    }
+
   } catch (error) {
     console.error('Erreur signup détaillée:', {
       error,

@@ -55,19 +55,28 @@ export function SignupForm() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        showToast('success', 'Bienvenue dans la communauté !');
-        setEmail('');
-      } else if (response.status === 429) {
-        showToast('error', "Trop de tentatives. Veuillez réessayer plus tard.");
-      } else {
-        showToast('error', data.error || "Erreur lors de l'inscription. Réessayez plus tard.");
+      switch (response.status) {
+        case 200:
+          showToast('success', 'Bienvenue dans la communauté !');
+          setEmail('');
+          break;
+        case 409:
+          showToast('error', "Cette adresse email est déjà inscrite dans notre communauté.");
+          break;
+        case 429:
+          showToast('error', "Trop de tentatives. Veuillez réessayer dans quelques minutes.");
+          break;
+        case 503:
+          showToast('error', "Service temporairement indisponible. Veuillez réessayer plus tard.");
+          break;
+        default:
+          showToast('error', data.error || "Une erreur est survenue. Veuillez réessayer plus tard.");
       }
     } catch (error) {
-      showToast('error', "Impossible de soumettre le formulaire.");
+      showToast('error', "Impossible de se connecter au service. Vérifiez votre connexion internet.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
