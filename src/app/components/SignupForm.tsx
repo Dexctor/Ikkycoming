@@ -124,7 +124,6 @@ export function SignupForm() {
               <Link 
                 href="/politique-confidentialite"
                 className="text-green-400 hover:text-green-300 underline"
-                target="_blank"
               >
                 politique de confidentialité
               </Link>
