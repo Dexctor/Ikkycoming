@@ -18,7 +18,7 @@ export const FEATURES: Feature[] = [
     title: "Gérer vos Jumeaux Numériques",
     desc: (
       <>
-        Exploiter des informations détaillées et conformes aux normes pour une visualisation, une concevoir précises et valoriser vos projets immobiliers grâce à la{' '}
+        Exploitez des informations détaillées et conformes aux normes pour une visualisation et une conception précises, et valorisez vos projets immobiliers grâce à la {' '}
         <span className="text-green-500 font-medium">Tokenisation</span>.
       </>
     ),
