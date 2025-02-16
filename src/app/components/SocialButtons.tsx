@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FaTwitter, FaLinkedin } from 'react-icons/fa';
+import { FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
 import { ANIMATIONS } from '@/app/constants/animations';
 import { useMemo } from 'react';
 
@@ -7,6 +7,7 @@ export const SocialButtons = () => {
   const socialLinks = useMemo(() => [
     { Icon: FaTwitter, href: "https://x.com/MyIkki_Network", color: "hover:text-green-400" },
     { Icon: FaLinkedin, href: "https://www.linkedin.com/company/myikki/", color: "hover:text-violet-500" },
+    { Icon: FaInstagram, href: "https://www.instagram.com/myikki_network/", color: "hover:text-pink-500" },
   ], []);
 
   return (
