@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { CookieBanner } from './components/CookieBanner';
-
+import TrackingScript from "@/app/components/TrackingScript";
 const inter = Inter({ 
   subsets: ["latin"],
   display: 'swap',
@@ -171,6 +171,7 @@ export default function RootLayout({
       <body className={inter.className}>
         {children}
         <CookieBanner />
+        <TrackingScript />
       </body>
     </html>
   );
